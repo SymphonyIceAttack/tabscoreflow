@@ -9,19 +9,23 @@ import { ScaleFretboard } from "@/components/scales/scale-fretboard"
 import { scales, SCALE_CATEGORIES, ROOT_NOTES } from "@/lib/data/scales"
 import { cn } from "@/lib/utils"
 import { Play, Pause, RotateCcw, Volume2 } from "lucide-react"
-import type { Scale } from "@/lib/types"
+import type { Scale, ScaleNote } from "@/lib/types"
 
 const ALL_NOTES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
 
-// 移调音阶
+// Transpose scale
 function transposeScale(scale: Scale, newRoot: string): Scale {
   const rootIndex = ALL_NOTES.indexOf(scale.root)
   const newRootIndex = ALL_NOTES.indexOf(newRoot)
   const shift = newRootIndex - rootIndex
   
-  const newNotes = scale.notes.map(note => {
-    const noteIndex = ALL_NOTES.indexOf(note)
-    return ALL_NOTES[(noteIndex + shift + 12) % 12]
+  const newNotes: ScaleNote[] = scale.notes.map(note => {
+    const noteIndex = ALL_NOTES.indexOf(note.interval || '1')
+    const newNote = ALL_NOTES[(noteIndex + shift + 12) % 12]
+    return {
+      ...note,
+      fret: note.fret, // Keep fret position, update note name
+    }
   })
   
   return {
@@ -43,19 +47,19 @@ export default function ScalesPage() {
   const audioContextRef = useRef<AudioContext | null>(null)
   const playbackRef = useRef<number | null>(null)
   
-  // 根据选择的根音过滤和转调音阶
+  // Filter and transpose scales based on selected root
   const availableScales = useMemo(() => {
     return scales
-      .filter(s => s.category === selectedCategory)
+      .filter(s => s.type === selectedCategory)
       .map(s => transposeScale(s, selectedRoot))
   }, [selectedCategory, selectedRoot])
   
-  // 当前选中的音阶（考虑移调）
+  // Current selected scale (with transposition)
   const currentScale = useMemo(() => {
     if (!selectedScale) {
       return availableScales[0] || null
     }
-    // 找到对应的音阶并移调
+    // Find corresponding scale and transpose
     const baseScale = scales.find(s => s.id === selectedScale.id.split("-")[0])
     if (baseScale) {
       return transposeScale(baseScale, selectedRoot)
@@ -63,7 +67,7 @@ export default function ScalesPage() {
     return selectedScale
   }, [selectedScale, selectedRoot, availableScales])
   
-  // 获取音符频率
+  // Get note frequency
   const getNoteFrequency = (note: string, octave: number = 4): number => {
     const A4 = 440
     const noteIndex = ALL_NOTES.indexOf(note)
@@ -71,7 +75,7 @@ export default function ScalesPage() {
     return A4 * Math.pow(2, semitonesFromA4 / 12)
   }
   
-  // 播放音阶
+  // Play scale
   const playScale = () => {
     if (!currentScale) return
     
@@ -80,12 +84,12 @@ export default function ScalesPage() {
     }
     
     const ctx = audioContextRef.current
-    const interval = 60 / playbackSpeed // 每个音符的间隔（秒）
+    const interval = 60 / playbackSpeed // Interval per note (seconds)
     
     setIsPlaying(true)
     
-    // 播放上行音阶
-    const notes = [...currentScale.notes, currentScale.notes[0]] // 加上高八度根音
+    // Play ascending scale
+    const notes = [...currentScale.notes, currentScale.notes[0]] // Add octave root
     let index = 0
     
     const playNext = () => {
@@ -95,8 +99,9 @@ export default function ScalesPage() {
       }
       
       const note = notes[index]
-      const octave = index === notes.length - 1 ? 5 : 4 // 最后一个音高八度
-      const frequency = getNoteFrequency(note, octave)
+      const octave = index === notes.length - 1 ? 5 : 4 // Last note octave higher
+      const noteStr = typeof note === 'string' ? note : `string${note.string}-${note.fret}`
+      const frequency = getNoteFrequency(noteStr, octave)
       
       const osc = ctx.createOscillator()
       const gainNode = ctx.createGain()
@@ -130,25 +135,26 @@ export default function ScalesPage() {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
-        {/* 页面标题 */}
+        {/* Page Title */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold mb-2">音阶练习器</h1>
+          <h1 className="text-4xl font-bold mb-2">Scale Practice</h1>
           <p className="text-muted-foreground">
-            学习各种音阶的指板把位，掌握即兴演奏的基础
+            Learn scale positions across the fretboard for improvisation
           </p>
         </div>
         
-        {/* 选择面板 */}
+        {/* Selection Panel */}
         <div className="max-w-4xl mx-auto mb-8 space-y-6">
-          {/* 根音选择 */}
+          {/* Root Note Selection */}
           <Card className="bg-card/50 backdrop-blur border-border/50">
             <CardHeader className="pb-3">
-              <CardTitle className="text-lg">选择根音</CardTitle>
+              <CardTitle className="text-lg">Select Root Note</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex flex-wrap gap-2">
                 {ROOT_NOTES.map(root => (
                   <button
+                    type="button"
                     key={root}
                     onClick={() => setSelectedRoot(root)}
                     className={cn(
@@ -165,37 +171,39 @@ export default function ScalesPage() {
             </CardContent>
           </Card>
           
-          {/* 音阶类型选择 */}
+          {/* Scale Type Selection */}
           <Card className="bg-card/50 backdrop-blur border-border/50">
             <CardHeader className="pb-3">
-              <CardTitle className="text-lg">音阶类型</CardTitle>
+              <CardTitle className="text-lg">Scale Type</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {/* 分类标签 */}
+              {/* Category Tabs */}
               <div className="flex flex-wrap gap-2">
                 {SCALE_CATEGORIES.map(category => (
                   <button
-                    key={category}
+                    type="button"
+                    key={category.value}
                     onClick={() => {
-                      setSelectedCategory(category)
+                      setSelectedCategory(category.value)
                       setSelectedScale(null)
                     }}
                     className={cn(
                       "px-4 py-2 rounded-lg text-sm font-medium transition-all",
-                      selectedCategory === category
+                      selectedCategory === category.value
                         ? "bg-primary text-primary-foreground"
                         : "bg-muted/50 hover:bg-muted"
                     )}
                   >
-                    {category}
+                    {category.label}
                   </button>
                 ))}
               </div>
               
-              {/* 该类型下的音阶 */}
+              {/* Scales in this category */}
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
                 {availableScales.map(scale => (
                   <button
+                    type="button"
                     key={scale.id}
                     onClick={() => setSelectedScale(scale)}
                     className={cn(
@@ -216,10 +224,10 @@ export default function ScalesPage() {
           </Card>
         </div>
         
-        {/* 音阶显示 */}
+        {/* Scale Display */}
         {currentScale && (
           <div className="max-w-6xl mx-auto space-y-6">
-            {/* 音阶信息 */}
+            {/* Scale Info */}
             <Card className="bg-card/50 backdrop-blur border-border/50">
               <CardContent className="pt-6">
                 <div className="flex flex-wrap items-start justify-between gap-4 mb-6">
@@ -229,12 +237,12 @@ export default function ScalesPage() {
                       <p className="text-muted-foreground mt-1">{currentScale.description}</p>
                     )}
                     <div className="flex flex-wrap gap-2 mt-3">
-                      <Badge variant="secondary">{currentScale.category}</Badge>
-                      <Badge variant="outline">{currentScale.notes.length} 音</Badge>
+                      <Badge variant="secondary">{currentScale.type}</Badge>
+                      <Badge variant="outline">{currentScale.notes.length} notes</Badge>
                     </div>
                   </div>
                   
-                  {/* 播放控制 */}
+                  {/* Playback Controls */}
                   <div className="flex items-center gap-3">
                     <Button
                       variant={isPlaying ? "destructive" : "default"}
@@ -244,19 +252,19 @@ export default function ScalesPage() {
                       {isPlaying ? (
                         <>
                           <Pause className="h-4 w-4" />
-                          停止
+                          Stop
                         </>
                       ) : (
                         <>
                           <Play className="h-4 w-4" />
-                          播放音阶
+                          Play Scale
                         </>
                       )}
                     </Button>
                   </div>
                 </div>
                 
-                {/* 速度控制 */}
+                {/* Speed Control */}
                 <div className="flex items-center gap-4 mb-6 max-w-md">
                   <Volume2 className="h-4 w-4 text-muted-foreground" />
                   <span className="text-sm text-muted-foreground w-16">{playbackSpeed} BPM</span>
@@ -278,9 +286,9 @@ export default function ScalesPage() {
                   </Button>
                 </div>
                 
-                {/* 音符和音程 */}
+                {/* Notes and Intervals */}
                 <div className="flex flex-wrap items-center gap-4 mb-6">
-                  <span className="text-sm text-muted-foreground">音符：</span>
+                  <span className="text-sm text-muted-foreground">Notes:</span>
                   <div className="flex flex-wrap gap-2">
                     {currentScale.notes.map((note, i) => (
                       <div key={i} className="text-center">
@@ -288,7 +296,7 @@ export default function ScalesPage() {
                           variant={i === 0 ? "default" : "secondary"}
                           className="mb-1"
                         >
-                          {note}
+                          {note.fret}
                         </Badge>
                         <div className="text-xs text-muted-foreground">
                           {currentScale.intervals[i]}
@@ -298,37 +306,37 @@ export default function ScalesPage() {
                   </div>
                 </div>
                 
-                {/* 指板图 */}
+                {/* Fretboard Diagram */}
                 <ScaleFretboard scale={currentScale} highlightRoot />
               </CardContent>
             </Card>
             
-            {/* 使用提示 */}
+            {/* Usage Tips */}
             <Card className="bg-card/50 backdrop-blur border-border/50">
               <CardHeader className="pb-3">
-                <CardTitle className="text-lg">练习建议</CardTitle>
+                <CardTitle className="text-lg">Practice Tips</CardTitle>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2 text-sm text-muted-foreground">
                   <li className="flex items-start gap-2">
                     <span className="text-primary">1.</span>
-                    先从低速开始，确保每个音符都弹准确
+                    Start at a slow tempo, make sure each note is accurate
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-primary">2.</span>
-                    练习上行和下行，建立肌肉记忆
+                    Practice ascending and descending to build muscle memory
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-primary">3.</span>
-                    尝试不同的把位，熟悉整个指板
+                    Try different positions to familiarize the entire fretboard
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-primary">4.</span>
-                    配合节拍器练习，保持稳定的节奏
+                    Practice with a metronome to maintain steady rhythm
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-primary">5.</span>
-                    尝试即兴创作简单的旋律
+                    Try improvising simple melodies
                   </li>
                 </ul>
               </CardContent>

@@ -25,33 +25,33 @@ import {
 const features = [
   {
     icon: Music,
-    title: '海量曲谱',
-    description: '收录上千首热门歌曲，从入门到专家难度全覆盖',
+    title: 'Extensive Tab Library',
+    description: 'Thousands of songs from beginner to expert level',
   },
   {
     icon: Play,
-    title: '交互式播放',
-    description: '实时曲谱跟随、速度调节、AB循环练习',
+    title: 'Interactive Player',
+    description: 'Real-time tab following, tempo control, and A-B loop practice',
   },
   {
     icon: Mic,
-    title: '智能调音',
-    description: '高精度音高检测，支持多种调弦模式',
+    title: 'Smart Tuner',
+    description: 'High-precision pitch detection with multiple tuning modes',
   },
   {
     icon: Timer,
-    title: '专业节拍器',
-    description: '精确节拍控制，渐进速度训练',
+    title: 'Pro Metronome',
+    description: 'Precise beat control with progressive speed training',
   },
   {
     icon: BookOpen,
-    title: '和弦/音阶库',
-    description: '完整的和弦图谱和音阶指法，随时查阅',
+    title: 'Chord & Scale Library',
+    description: 'Complete chord charts and scale fingerings for quick reference',
   },
   {
     icon: BarChart3,
-    title: '学习追踪',
-    description: '记录每次练习，见证你的成长轨迹',
+    title: 'Learning Tracker',
+    description: 'Track your practice sessions and monitor your progress',
   },
 ]
 
@@ -59,38 +59,38 @@ const tools = [
   {
     href: '/tools?tab=tuner',
     icon: Mic,
-    title: '调音器',
-    description: '精准调音',
+    title: 'Tuner',
+    description: 'Precision Tuning',
     color: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20',
   },
   {
     href: '/tools?tab=metronome',
     icon: Timer,
-    title: '节拍器',
-    description: '节奏训练',
+    title: 'Metronome',
+    description: 'Rhythm Training',
     color: 'bg-blue-500/10 text-blue-500 border-blue-500/20',
   },
   {
     href: '/chords',
     icon: BookOpen,
-    title: '和弦库',
-    description: '指法图谱',
+    title: 'Chords',
+    description: 'Fingering Charts',
     color: 'bg-amber-500/10 text-amber-500 border-amber-500/20',
   },
   {
     href: '/scales',
     icon: BarChart3,
-    title: '音阶练习',
-    description: '指板记忆',
+    title: 'Scales',
+    description: 'Fretboard Mastery',
     color: 'bg-purple-500/10 text-purple-500 border-purple-500/20',
   },
 ]
 
 const stats = [
-  { value: '10,000+', label: '曲谱资源' },
-  { value: '50,000+', label: '活跃用户' },
-  { value: '100万+', label: '练习时长' },
-  { value: '4.9', label: '用户评分', icon: Star },
+  { value: '10,000+', label: 'Tabs' },
+  { value: '50,000+', label: 'Active Users' },
+  { value: '1M+', label: 'Practice Hours' },
+  { value: '4.9', label: 'User Rating', icon: Star },
 ]
 
 export default function HomePage() {
@@ -114,32 +114,32 @@ export default function HomePage() {
             <div className="max-w-3xl mx-auto text-center">
               <Badge variant="outline" className="mb-6 px-4 py-1.5">
                 <Zap className="h-3.5 w-3.5 mr-1.5" />
-                全新升级 - 支持 Guitar Pro 格式
+                New - Guitar Pro Format Support
               </Badge>
               
               <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6 text-balance">
-                专业的吉他
-                <span className="text-primary">曲谱练习</span>
-                平台
+                Professional Guitar
+                <span className="text-primary"> Tab Practice</span>
+                Platform
               </h1>
               
               <p className="text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed text-balance">
-                海量曲谱资源，交互式播放器，智能调音器，专业节拍器
+                Extensive tab library, interactive player, smart tuner, professional metronome
                 <br className="hidden sm:block" />
-                一站式解决你的吉他练习需求
+                All-in-one solution for your guitar practice needs
               </p>
               
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Button asChild size="lg" className="w-full sm:w-auto">
                   <Link href="/tabs">
                     <Play className="h-5 w-5 mr-2" />
-                    开始练习
+                    Start Practicing
                   </Link>
                 </Button>
                 <Button asChild variant="outline" size="lg" className="w-full sm:w-auto">
                   <Link href="/tools">
                     <Guitar className="h-5 w-5 mr-2" />
-                    探索工具
+                    Explore Tools
                   </Link>
                 </Button>
               </div>
@@ -165,12 +165,12 @@ export default function HomePage() {
           <div className="container px-4 py-12">
             <div className="flex items-center justify-between mb-8">
               <div>
-                <h2 className="text-2xl font-bold">练习工具</h2>
-                <p className="text-muted-foreground mt-1">快速访问常用工具</p>
+                <h2 className="text-2xl font-bold">Practice Tools</h2>
+                <p className="text-muted-foreground mt-1">Quick access to essential tools</p>
               </div>
               <Button asChild variant="ghost">
                 <Link href="/tools">
-                  查看全部
+                  View All
                   <ArrowRight className="h-4 w-4 ml-2" />
                 </Link>
               </Button>
@@ -198,12 +198,12 @@ export default function HomePage() {
           <div className="container px-4 py-16">
             <div className="flex items-center justify-between mb-8">
               <div>
-                <h2 className="text-2xl font-bold">精选曲谱</h2>
-                <p className="text-muted-foreground mt-1">编辑精选的高质量曲谱</p>
+                <h2 className="text-2xl font-bold">Featured Tabs</h2>
+                <p className="text-muted-foreground mt-1">Editor-curated high-quality tabs</p>
               </div>
               <Button asChild variant="ghost">
                 <Link href="/tabs">
-                  查看全部
+                  View All
                   <ArrowRight className="h-4 w-4 ml-2" />
                 </Link>
               </Button>
@@ -223,13 +223,13 @@ export default function HomePage() {
               <div className="flex items-center gap-3">
                 <TrendingUp className="h-6 w-6 text-primary" />
                 <div>
-                  <h2 className="text-2xl font-bold">热门曲谱</h2>
-                  <p className="text-muted-foreground mt-1">最受欢迎的练习曲目</p>
+                  <h2 className="text-2xl font-bold">Popular Tabs</h2>
+                  <p className="text-muted-foreground mt-1">Most popular practice songs</p>
                 </div>
               </div>
               <Button asChild variant="ghost">
                 <Link href="/tabs?sort=popular">
-                  查看更多
+                  View More
                   <ArrowRight className="h-4 w-4 ml-2" />
                 </Link>
               </Button>
@@ -248,13 +248,13 @@ export default function HomePage() {
             <div className="text-center max-w-2xl mx-auto mb-16">
               <Badge variant="outline" className="mb-4">
                 <Target className="h-3.5 w-3.5 mr-1.5" />
-                功能特色
+                Features
               </Badge>
               <h2 className="text-3xl md:text-4xl font-bold mb-4 text-balance">
-                为吉他学习者打造的一站式平台
+                All-in-One Platform for Guitar Learners
               </h2>
               <p className="text-muted-foreground text-lg">
-                无论你是初学者还是进阶玩家，这里都有适合你的资源和工具
+                Whether you're a beginner or advanced player, we have resources and tools for you
               </p>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -278,12 +278,12 @@ export default function HomePage() {
           <div className="container px-4 py-16">
             <div className="flex items-center justify-between mb-8">
               <div>
-                <h2 className="text-2xl font-bold">最新上传</h2>
-                <p className="text-muted-foreground mt-1">刚刚更新的曲谱</p>
+                <h2 className="text-2xl font-bold">Latest Uploads</h2>
+                <p className="text-muted-foreground mt-1">Recently updated tabs</p>
               </div>
               <Button asChild variant="ghost">
                 <Link href="/tabs?sort=latest">
-                  查看更多
+                  View More
                   <ArrowRight className="h-4 w-4 ml-2" />
                 </Link>
               </Button>
@@ -303,21 +303,21 @@ export default function HomePage() {
             <div className="max-w-2xl mx-auto text-center">
               <Users className="h-12 w-12 mx-auto mb-6 text-primary" />
               <h2 className="text-3xl md:text-4xl font-bold mb-4 text-balance">
-                加入我们的吉他学习社区
+                Join Our Guitar Learning Community
               </h2>
               <p className="text-lg text-muted-foreground mb-8">
-                与数万名吉他爱好者一起学习、分享、成长
+                Learn, share, and grow with thousands of guitar enthusiasts
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Button asChild size="lg">
                   <Link href="/community">
-                    进入社区
+                    Join Community
                     <ArrowRight className="h-5 w-5 ml-2" />
                   </Link>
                 </Button>
                 <Button asChild variant="outline" size="lg">
                   <Link href="/community/challenges">
-                    参与挑战
+                    Join Challenges
                   </Link>
                 </Button>
               </div>

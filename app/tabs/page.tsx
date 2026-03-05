@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo, useEffect } from 'react'
+import { Suspense, useState, useMemo, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
@@ -37,22 +37,30 @@ import {
 } from 'lucide-react'
 
 const difficultyOptions = [
-  { value: 1, label: '入门' },
-  { value: 2, label: '简单' },
-  { value: 3, label: '中等' },
-  { value: 4, label: '困难' },
-  { value: 5, label: '专家' },
+  { value: 1, label: 'Beginner' },
+  { value: 2, label: 'Easy' },
+  { value: 3, label: 'Medium' },
+  { value: 4, label: 'Hard' },
+  { value: 5, label: 'Expert' },
 ]
 
 const sortOptions = [
-  { value: 'latest', label: '最新上传' },
-  { value: 'popular', label: '最受欢迎' },
-  { value: 'rating', label: '评分最高' },
-  { value: 'difficulty-asc', label: '难度从低到高' },
-  { value: 'difficulty-desc', label: '难度从高到低' },
+  { value: 'latest', label: 'Latest' },
+  { value: 'popular', label: 'Most Popular' },
+  { value: 'rating', label: 'Highest Rated' },
+  { value: 'difficulty-asc', label: 'Difficulty: Low to High' },
+  { value: 'difficulty-desc', label: 'Difficulty: High to Low' },
 ]
 
 export default function TabsPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+      <TabsPageContent />
+    </Suspense>
+  )
+}
+
+function TabsPageContent() {
   const searchParams = useSearchParams()
   const initialSearch = searchParams.get('search') || ''
   const initialSort = searchParams.get('sort') || 'popular'
@@ -147,7 +155,7 @@ export default function TabsPage() {
     <div className="space-y-6">
       {/* Difficulty */}
       <div>
-        <h4 className="font-medium mb-3">难度等级</h4>
+        <h4 className="font-medium mb-3">Difficulty Level</h4>
         <div className="space-y-2">
           {difficultyOptions.map(option => (
             <div key={option.value} className="flex items-center gap-2">
@@ -171,7 +179,7 @@ export default function TabsPage() {
 
       {/* Genre */}
       <div>
-        <h4 className="font-medium mb-3">音乐风格</h4>
+        <h4 className="font-medium mb-3">Music Genre</h4>
         <div className="space-y-2 max-h-[300px] overflow-y-auto pr-2">
           {genres.map(genre => (
             <div key={genre} className="flex items-center gap-2">
@@ -196,7 +204,7 @@ export default function TabsPage() {
           <Separator />
           <Button variant="outline" className="w-full" onClick={clearFilters}>
             <X className="h-4 w-4 mr-2" />
-            清除所有筛选
+            Clear All Filters
           </Button>
         </>
       )}
@@ -213,10 +221,10 @@ export default function TabsPage() {
           <div className="container px-4 py-8">
             <div className="flex items-center gap-3 mb-2">
               <Music className="h-8 w-8 text-primary" />
-              <h1 className="text-3xl font-bold">曲谱库</h1>
+              <h1 className="text-3xl font-bold">Tab Library</h1>
             </div>
             <p className="text-muted-foreground">
-              浏览和搜索数千首吉他曲谱，找到适合你水平的练习曲目
+              Browse and search thousands of guitar tabs to find songs at your level
             </p>
           </div>
         </section>
@@ -230,7 +238,7 @@ export default function TabsPage() {
                 <div className="flex items-center justify-between">
                   <h3 className="font-semibold flex items-center gap-2">
                     <Filter className="h-4 w-4" />
-                    筛选条件
+                    Filters
                   </h3>
                   {activeFilterCount > 0 && (
                     <Badge variant="secondary">{activeFilterCount}</Badge>
@@ -248,7 +256,7 @@ export default function TabsPage() {
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
                     type="search"
-                    placeholder="搜索曲名、艺人或风格..."
+                    placeholder="Search tabs, artists, or genres..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="pl-10"
@@ -260,7 +268,7 @@ export default function TabsPage() {
                     <SheetTrigger asChild>
                       <Button variant="outline" className="lg:hidden">
                         <SlidersHorizontal className="h-4 w-4 mr-2" />
-                        筛选
+                        Filter
                         {activeFilterCount > 0 && (
                           <Badge variant="secondary" className="ml-2">
                             {activeFilterCount}
@@ -270,7 +278,7 @@ export default function TabsPage() {
                     </SheetTrigger>
                     <SheetContent side="left">
                       <SheetHeader>
-                        <SheetTitle>筛选条件</SheetTitle>
+                        <SheetTitle>Filters</SheetTitle>
                       </SheetHeader>
                       <div className="mt-6">
                         <FilterContent />
@@ -281,7 +289,7 @@ export default function TabsPage() {
                   {/* Sort Select */}
                   <Select value={sortBy} onValueChange={setSortBy}>
                     <SelectTrigger className="w-[160px]">
-                      <SelectValue placeholder="排序方式" />
+                      <SelectValue placeholder="Sort by" />
                     </SelectTrigger>
                     <SelectContent>
                       {sortOptions.map(option => (
@@ -317,11 +325,11 @@ export default function TabsPage() {
               {/* Active Filters */}
               {(selectedDifficulties.length > 0 || selectedGenres.length > 0 || searchQuery) && (
                 <div className="flex flex-wrap items-center gap-2 mb-6">
-                  <span className="text-sm text-muted-foreground">已选:</span>
+                  <span className="text-sm text-muted-foreground">Active:</span>
                   {searchQuery && (
                     <Badge variant="secondary" className="gap-1">
-                      搜索: {searchQuery}
-                      <button onClick={() => setSearchQuery('')}>
+                      Search: {searchQuery}
+                      <button type="button" onClick={() => setSearchQuery('')}>
                         <X className="h-3 w-3" />
                       </button>
                     </Badge>
@@ -329,7 +337,7 @@ export default function TabsPage() {
                   {selectedDifficulties.map(d => (
                     <Badge key={d} variant="secondary" className="gap-1">
                       {difficultyOptions.find(o => o.value === d)?.label}
-                      <button onClick={() => toggleDifficulty(d)}>
+                      <button type="button" onClick={() => toggleDifficulty(d)}>
                         <X className="h-3 w-3" />
                       </button>
                     </Badge>
@@ -337,7 +345,7 @@ export default function TabsPage() {
                   {selectedGenres.map(g => (
                     <Badge key={g} variant="secondary" className="gap-1">
                       {g}
-                      <button onClick={() => toggleGenre(g)}>
+                      <button type="button" onClick={() => toggleGenre(g)}>
                         <X className="h-3 w-3" />
                       </button>
                     </Badge>
@@ -348,14 +356,14 @@ export default function TabsPage() {
                     className="h-6 px-2 text-xs"
                     onClick={clearFilters}
                   >
-                    清除全部
+                    Clear All
                   </Button>
                 </div>
               )}
 
               {/* Results Count */}
               <p className="text-sm text-muted-foreground mb-4">
-                共找到 <span className="font-medium text-foreground">{filteredTabs.length}</span> 首曲谱
+                Found <span className="font-medium text-foreground">{filteredTabs.length}</span> tabs
               </p>
 
               {/* Results */}
@@ -376,12 +384,12 @@ export default function TabsPage() {
               ) : (
                 <div className="text-center py-16">
                   <Music className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">未找到曲谱</h3>
+                  <h3 className="text-lg font-semibold mb-2">No Tabs Found</h3>
                   <p className="text-muted-foreground mb-4">
-                    尝试调整筛选条件或搜索其他关键词
+                    Try adjusting your filters or search for something else
                   </p>
                   <Button variant="outline" onClick={clearFilters}>
-                    清除筛选条件
+                    Clear Filters
                   </Button>
                 </div>
               )}

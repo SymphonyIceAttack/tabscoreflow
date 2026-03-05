@@ -44,24 +44,24 @@ export default function PostPage({ params }: PostPageProps) {
       const hours = Math.floor(diff / (1000 * 60 * 60))
       if (hours === 0) {
         const minutes = Math.floor(diff / (1000 * 60))
-        return `${minutes} 分钟前`
+        return `${minutes} minutes ago`
       }
-      return `${hours} 小时前`
+      return `${hours} hours ago`
     }
-    if (days < 7) return `${days} 天前`
-    return date.toLocaleDateString("zh-CN")
+    if (days < 7) return `${days} days ago`
+    return date.toLocaleDateString("en-US")
   }
   
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
-        {/* 返回按钮 */}
+        {/* Back button */}
         <Link href="/community" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6 transition-colors">
           <ArrowLeft className="h-4 w-4" />
-          返回社区
+          Back to Community
         </Link>
         
-        {/* 帖子内容 */}
+        {/* Post content */}
         <Card className="bg-card/50 backdrop-blur border-border/50 mb-6">
           <CardHeader className="space-y-4">
             <div className="flex flex-wrap gap-2">

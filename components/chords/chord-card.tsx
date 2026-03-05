@@ -14,7 +14,7 @@ export function ChordCard({ chord, onClick, isSelected }: ChordCardProps) {
   const position = chord.positions[0]
   
   // 计算显示范围
-  const nonZeroFrets = position.frets.filter(f => f > 0)
+  const nonZeroFrets = chord.positions.filter(p => p.fret > 0).map(p => p.fret)
   const minFret = nonZeroFrets.length > 0 ? Math.min(...nonZeroFrets) : 0
   const startFret = minFret <= 3 ? 0 : minFret - 1
   
@@ -78,8 +78,10 @@ export function ChordCard({ chord, onClick, isSelected }: ChordCardProps) {
           ))}
           
           {/* 手指位置 */}
-          {position.frets.map((fret, stringIndex) => {
-            if (fret === -1) {
+          {chord.positions.map((pos, stringIndex) => {
+            const fret = pos.fret
+            const isMuted = chord.mutedStrings?.includes(pos.string)
+            if (isMuted) {
               return (
                 <text
                   key={stringIndex}

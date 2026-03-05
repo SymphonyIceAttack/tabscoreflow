@@ -28,7 +28,7 @@ interface TabPageProps {
   params: Promise<{ id: string }>
 }
 
-const difficultyLabels = ['', '入门', '简单', '中等', '困难', '专家']
+const difficultyLabels = ['', 'Beginner', 'Easy', 'Medium', 'Hard', 'Expert']
 const difficultyColors = [
   '',
   'bg-green-500/20 text-green-500 border-green-500/30',
@@ -78,7 +78,7 @@ export default async function TabPage({ params }: TabPageProps) {
             <Button asChild variant="ghost" size="sm">
               <Link href="/tabs">
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                返回曲谱库
+                Back to Tab Library
               </Link>
             </Button>
           </div>
@@ -133,7 +133,7 @@ export default async function TabPage({ params }: TabPageProps) {
                     </span>
                     <span className="flex items-center gap-1">
                       <Calendar className="h-4 w-4" />
-                      {new Date(tab.createdAt).toLocaleDateString('zh-CN')}
+                      {new Date(tab.createdAt).toLocaleDateString('en-US')}
                     </span>
                   </div>
 
@@ -146,15 +146,15 @@ export default async function TabPage({ params }: TabPageProps) {
                   <div className="flex flex-wrap gap-2">
                     <Button size="sm" variant="outline">
                       <Heart className="h-4 w-4 mr-2" />
-                      收藏
+                      Favorite
                     </Button>
                     <Button size="sm" variant="outline">
                       <Share2 className="h-4 w-4 mr-2" />
-                      分享
+                      Share
                     </Button>
                     <Button size="sm" variant="outline">
                       <Download className="h-4 w-4 mr-2" />
-                      下载
+                      Download
                     </Button>
                   </div>
                 </div>
@@ -167,7 +167,7 @@ export default async function TabPage({ params }: TabPageProps) {
               {tab.description && (
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-lg">曲谱说明</CardTitle>
+                    <CardTitle className="text-lg">Tab Description</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground leading-relaxed">
@@ -182,13 +182,13 @@ export default async function TabPage({ params }: TabPageProps) {
                 <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle className="text-lg flex items-center gap-2">
                     <MessageSquare className="h-5 w-5" />
-                    评论区
+                    Comments
                   </CardTitle>
-                  <Badge variant="secondary">即将推出</Badge>
+                  <Badge variant="secondary">Coming Soon</Badge>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground text-center py-8">
-                    评论功能正在开发中，敬请期待...
+                    Comment feature is under development, stay tuned...
                   </p>
                 </CardContent>
               </Card>
@@ -199,7 +199,7 @@ export default async function TabPage({ params }: TabPageProps) {
               {/* Tab details */}
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">曲谱信息</CardTitle>
+                  <CardTitle className="text-lg">Tab Info</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div className="flex justify-between">
@@ -208,26 +208,26 @@ export default async function TabPage({ params }: TabPageProps) {
                   </div>
                   <Separator />
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">调式</span>
+                    <span className="text-muted-foreground">Key</span>
                     <span className="font-medium">{tab.key}</span>
                   </div>
                   <Separator />
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">调弦</span>
+                    <span className="text-muted-foreground">Tuning</span>
                     <span className="font-medium">{tab.tuning}</span>
                   </div>
                   {tab.capo && (
                     <>
                       <Separator />
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">变调夹</span>
-                        <span className="font-medium">{tab.capo} 品</span>
+                        <span className="text-muted-foreground">Capo</span>
+                        <span className="font-medium">{tab.capo} frets</span>
                       </div>
                     </>
                   )}
                   <Separator />
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">难度</span>
+                    <span className="text-muted-foreground">Difficulty</span>
                     <Badge 
                       variant="outline" 
                       className={difficultyColors[tab.difficulty]}
@@ -242,7 +242,7 @@ export default async function TabPage({ params }: TabPageProps) {
               {similarTabs.length > 0 && (
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-lg">相似曲谱</CardTitle>
+                    <CardTitle className="text-lg">Similar Tabs</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3">
                     {similarTabs.map(t => (

@@ -3,7 +3,7 @@ import type { Scale } from '@/lib/types'
 export const scales: Scale[] = [
   {
     id: 'c-major',
-    name: 'C 大调音阶',
+    name: 'C Major Scale',
     type: 'major',
     root: 'C',
     notes: [
@@ -27,11 +27,11 @@ export const scales: Scale[] = [
       { fret: 3, string: 6, interval: '5' }
     ],
     intervals: ['1', '2', '3', '4', '5', '6', '7'],
-    description: '最基础的大调音阶，所有白键音符，无升降号。'
+    description: 'The most basic major scale, all white key notes, no sharps or flats.'
   },
   {
     id: 'a-minor',
-    name: 'A 小调音阶',
+    name: 'A Minor Scale',
     type: 'minor',
     root: 'A',
     notes: [
@@ -54,11 +54,11 @@ export const scales: Scale[] = [
       { fret: 3, string: 6, interval: '5' }
     ],
     intervals: ['1', '2', 'b3', '4', '5', 'b6', 'b7'],
-    description: 'C大调的关系小调，情感忧郁，摇滚和布鲁斯常用。'
+    description: 'The relative minor of C major, melancholic emotion, commonly used in rock and blues.'
   },
   {
     id: 'a-pentatonic-minor',
-    name: 'A 小调五声音阶',
+    name: 'A Minor Pentatonic',
     type: 'pentatonic-minor',
     root: 'A',
     notes: [
@@ -76,11 +76,11 @@ export const scales: Scale[] = [
       { fret: 8, string: 6, interval: 'b3' }
     ],
     intervals: ['1', 'b3', '4', '5', 'b7'],
-    description: '最常用的即兴音阶，只有5个音符，非常适合蓝调和摇滚独奏。'
+    description: 'The most common improvising scale, only 5 notes, perfect for blues and rock solos.'
   },
   {
     id: 'e-pentatonic-minor',
-    name: 'E 小调五声音阶',
+    name: 'E Minor Pentatonic',
     type: 'pentatonic-minor',
     root: 'E',
     notes: [
@@ -98,11 +98,11 @@ export const scales: Scale[] = [
       { fret: 3, string: 6, interval: 'b3' }
     ],
     intervals: ['1', 'b3', '4', '5', 'b7'],
-    description: '开放把位的小调五声音阶，利用空弦，非常适合初学者。'
+    description: 'Open position minor pentatonic, uses open strings, perfect for beginners.'
   },
   {
     id: 'a-blues',
-    name: 'A 布鲁斯音阶',
+    name: 'A Blues Scale',
     type: 'blues',
     root: 'A',
     notes: [
@@ -122,11 +122,11 @@ export const scales: Scale[] = [
       { fret: 8, string: 6, interval: 'b3' }
     ],
     intervals: ['1', 'b3', '4', 'b5', '5', 'b7'],
-    description: '小调五声音阶加上"蓝调音"(b5)，增加了独特的张力和情感。'
+    description: 'Minor pentatonic with the "blue note" (b5), adding unique tension and emotion.'
   },
   {
     id: 'g-major-pentatonic',
-    name: 'G 大调五声音阶',
+    name: 'G Major Pentatonic',
     type: 'pentatonic-major',
     root: 'G',
     notes: [
@@ -144,11 +144,11 @@ export const scales: Scale[] = [
       { fret: 5, string: 6, interval: '2' }
     ],
     intervals: ['1', '2', '3', '5', '6'],
-    description: '大调五声音阶，明亮欢快的感觉，适合乡村和流行音乐。'
+    description: 'Major pentatonic scale, bright and joyful feel, suitable for country and pop music.'
   },
   {
     id: 'a-dorian',
-    name: 'A 多利亚调式',
+    name: 'A Dorian Mode',
     type: 'dorian',
     root: 'A',
     notes: [
@@ -170,11 +170,11 @@ export const scales: Scale[] = [
       { fret: 8, string: 6, interval: 'b3' }
     ],
     intervals: ['1', '2', 'b3', '4', '5', '6', 'b7'],
-    description: '小调音阶的变体，有大六度，融合摇滚和爵士常用。'
+    description: 'Variation of minor scale with major sixth, commonly used in fusion rock and jazz.'
   },
   {
     id: 'e-mixolydian',
-    name: 'E 混合利底亚调式',
+    name: 'E Mixolydian Mode',
     type: 'mixolydian',
     root: 'E',
     notes: [
@@ -196,22 +196,25 @@ export const scales: Scale[] = [
       { fret: 4, string: 6, interval: '3' }
     ],
     intervals: ['1', '2', '3', '4', '5', '6', 'b7'],
-    description: '大调音阶但有小七度，属七和弦的配套音阶，摇滚和布鲁斯常用。'
+    description: 'Major scale with minor seventh, companion to dominant seventh chords, commonly used in rock and blues.'
   }
 ]
 
 export const scaleTypes = [
-  { value: 'major', label: '大调' },
-  { value: 'minor', label: '小调' },
-  { value: 'pentatonic-major', label: '大调五声' },
-  { value: 'pentatonic-minor', label: '小调五声' },
-  { value: 'blues', label: '布鲁斯' },
-  { value: 'dorian', label: '多利亚' },
-  { value: 'mixolydian', label: '混合利底亚' },
-  { value: 'phrygian', label: '弗里几亚' }
+  { value: 'major', label: 'Major' },
+  { value: 'minor', label: 'Minor' },
+  { value: 'pentatonic-major', label: 'Major Pentatonic' },
+  { value: 'pentatonic-minor', label: 'Minor Pentatonic' },
+  { value: 'blues', label: 'Blues' },
+  { value: 'dorian', label: 'Dorian' },
+  { value: 'mixolydian', label: 'Mixolydian' },
+  { value: 'phrygian', label: 'Phrygian' }
 ]
 
 export const roots = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+
+export const SCALE_CATEGORIES = scaleTypes
+export const ROOT_NOTES = roots
 
 export function getScaleById(id: string): Scale | undefined {
   return scales.find(scale => scale.id === id)

@@ -29,6 +29,7 @@ export interface ChordPosition {
 export interface Chord {
   id: string
   name: string
+  fullName?: string
   symbol: string
   type: 'major' | 'minor' | 'seventh' | 'maj7' | 'min7' | 'sus2' | 'sus4' | 'dim' | 'aug' | 'power'
   root: string
@@ -37,6 +38,9 @@ export interface Chord {
   mutedStrings?: number[]
   openStrings?: number[]
   difficulty: 1 | 2 | 3
+  notes?: string[]
+  category?: string
+  relatedChords?: string[]
 }
 
 // 音阶相关类型

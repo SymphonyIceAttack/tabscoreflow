@@ -1,5 +1,6 @@
 'use client'
 
+import { Suspense, useState } from "react"
 import { useSearchParams } from "next/navigation"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Tuner } from "@/components/tools/tuner"
@@ -9,6 +10,14 @@ import { Footer } from "@/components/layout/footer"
 import { Guitar, Timer } from "lucide-react"
 
 export default function ToolsPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+      <ToolsPageContent />
+    </Suspense>
+  )
+}
+
+function ToolsPageContent() {
   const searchParams = useSearchParams()
   const defaultTab = searchParams.get('tab') || 'tuner'
 
@@ -18,9 +27,9 @@ export default function ToolsPage() {
       <main className="flex-1">
         <div className="container mx-auto px-4 py-8 max-w-2xl">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold mb-2">练习工具</h1>
+            <h1 className="text-3xl font-bold mb-2">Practice Tools</h1>
             <p className="text-muted-foreground">
-              调音器、节拍器等吉他练习必备工具
+              Essential guitar practice tools like tuner and metronome
             </p>
           </div>
           
@@ -28,11 +37,11 @@ export default function ToolsPage() {
             <TabsList className="grid w-full grid-cols-2 mb-6">
               <TabsTrigger value="tuner" className="flex items-center gap-2">
                 <Guitar className="h-4 w-4" />
-                调音器
+                Tuner
               </TabsTrigger>
               <TabsTrigger value="metronome" className="flex items-center gap-2">
                 <Timer className="h-4 w-4" />
-                节拍器
+                Metronome
               </TabsTrigger>
             </TabsList>
             

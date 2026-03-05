@@ -14,7 +14,7 @@ interface ChordDetailProps {
 export function ChordDetail({ chord }: ChordDetailProps) {
   const audioContextRef = useRef<AudioContext | null>(null)
   
-  // 播放和弦音符
+  // Play chord notes
   const playChord = () => {
     if (!audioContextRef.current) {
       audioContextRef.current = new AudioContext()
@@ -23,24 +23,26 @@ export function ChordDetail({ chord }: ChordDetailProps) {
     const ctx = audioContextRef.current
     const now = ctx.currentTime
     
-    // 根弦频率映射（开放弦）
+    // Open string frequency mapping
     const openStringFreqs = [329.63, 246.94, 196.0, 146.83, 110.0, 82.41] // E4 B3 G3 D3 A2 E2
     
-    chord.positions[0].frets.forEach((fret, stringIndex) => {
-      if (fret === -1) return // 跳过不弹的弦
+    chord.positions.forEach((pos) => {
+      const fret = pos.fret
+      if (fret === 0) return // Skip open strings
       
-      // 计算实际频率
+      // Calculate actual frequency
+      const stringIndex = 5 - (pos.string - 1) // Convert 1-6 to 5-0 index
       const baseFreq = openStringFreqs[stringIndex]
       const freq = baseFreq * Math.pow(2, fret / 12)
       
-      // 创建振荡器
+      // Create oscillator
       const osc = ctx.createOscillator()
       const gainNode = ctx.createGain()
       
       osc.type = "triangle"
       osc.frequency.setValueAtTime(freq, now)
       
-      // 琶音效果 - 每根弦延迟一点
+      // Arpeggio effect - slight delay per string
       const delay = stringIndex * 0.05
       
       gainNode.gain.setValueAtTime(0, now + delay)
@@ -57,8 +59,8 @@ export function ChordDetail({ chord }: ChordDetailProps) {
   
   const position = chord.positions[0]
   
-  // 计算指板显示范围
-  const nonZeroFrets = position.frets.filter(f => f > 0)
+  // Calculate fretboard display range
+  const nonZeroFrets = chord.positions.filter(p => p.fret > 0).map(p => p.fret)
   const minFret = nonZeroFrets.length > 0 ? Math.min(...nonZeroFrets) : 0
   const maxFret = nonZeroFrets.length > 0 ? Math.max(...nonZeroFrets) : 3
   const startFret = minFret <= 4 ? 0 : minFret - 1
@@ -66,7 +68,7 @@ export function ChordDetail({ chord }: ChordDetailProps) {
   
   return (
     <div className="space-y-6">
-      {/* 和弦名称和信息 */}
+      {/* Chord Name and Info */}
       <div className="flex items-start justify-between">
         <div>
           <h2 className="text-3xl font-bold">{chord.name}</h2>
@@ -78,28 +80,28 @@ export function ChordDetail({ chord }: ChordDetailProps) {
         </div>
         <Button onClick={playChord} size="lg" className="gap-2">
           <Play className="h-5 w-5" />
-          播放
+          Play
         </Button>
       </div>
       
-      {/* 和弦图 */}
+      {/* Chord Diagram */}
       <div className="bg-muted/30 rounded-xl p-6">
         <div className="max-w-xs mx-auto">
-          {/* 起始品位标记 */}
+          {/* Starting Fret Marker */}
           {startFret > 0 && (
             <div className="text-right pr-2 text-sm text-muted-foreground mb-2">
               {startFret + 1} fr
             </div>
           )}
           
-          {/* 指板图 */}
+          {/* Fretboard Diagram */}
           <div className="relative">
-            {/* 弦 */}
+            {/* Strings */}
             <svg 
               viewBox={`0 0 150 ${displayFrets * 30 + 20}`} 
               className="w-full"
             >
-              {/* 琴枕或起始品位线 */}
+              {/* Nut or starting fret line */}
               <rect 
                 x="15" 
                 y="10" 
@@ -109,7 +111,7 @@ export function ChordDetail({ chord }: ChordDetailProps) {
                 className="text-foreground"
               />
               
-              {/* 品丝 */}
+              {/* Frets */}
               {Array.from({ length: displayFrets }).map((_, i) => (
                 <rect
                   key={i}
@@ -122,27 +124,30 @@ export function ChordDetail({ chord }: ChordDetailProps) {
                 />
               ))}
               
-              {/* 弦 */}
-              {[0, 1, 2, 3, 4, 5].map((string) => (
+              {/* Strings */}
+              {[0, 1, 2, 3, 4, 5].map((stringIndex) => (
                 <line
-                  key={string}
-                  x1={15 + string * 24}
+                  key={stringIndex}
+                  x1={15 + stringIndex * 24}
                   y1="10"
-                  x2={15 + string * 24}
+                  x2={15 + stringIndex * 24}
                   y2={10 + displayFrets * 30 + 6}
                   stroke="hsl(var(--muted-foreground))"
-                  strokeWidth={1 + string * 0.3}
+                  strokeWidth={1 + stringIndex * 0.3}
                   opacity="0.7"
                 />
               ))}
               
-              {/* 手指位置 */}
-              {position.frets.map((fret, stringIndex) => {
-                if (fret === -1) {
-                  // X 标记 - 不弹
+              {/* Finger Positions - iterate through positions array */}
+              {chord.positions.map((pos, idx) => {
+                const stringIndex = 5 - (pos.string - 1) // Convert to 0-5 from right to left
+                const fret = pos.fret
+                
+                if (fret === -1 || (chord.mutedStrings && chord.mutedStrings.includes(pos.string))) {
+                  // X mark - don't play
                   return (
                     <text
-                      key={stringIndex}
+                      key={idx}
                       x={15 + stringIndex * 24}
                       y="6"
                       textAnchor="middle"
@@ -155,10 +160,10 @@ export function ChordDetail({ chord }: ChordDetailProps) {
                 }
                 
                 if (fret === 0) {
-                  // 空心圆 - 空弦
+                  // Open circle - open string
                   return (
                     <circle
-                      key={stringIndex}
+                      key={idx}
                       cx={15 + stringIndex * 24}
                       cy="3"
                       r="4"
@@ -169,17 +174,17 @@ export function ChordDetail({ chord }: ChordDetailProps) {
                   )
                 }
                 
-                // 实心圆 - 按弦位置
+                // Filled circle - pressed position
                 const displayFret = fret - startFret
                 return (
-                  <g key={stringIndex}>
+                  <g key={idx}>
                     <circle
                       cx={15 + stringIndex * 24}
                       cy={16 + displayFret * 30 - 15}
                       r="10"
                       fill="hsl(var(--primary))"
                     />
-                    {position.fingers && position.fingers[stringIndex] > 0 && (
+                    {pos.finger && pos.finger > 0 && (
                       <text
                         x={15 + stringIndex * 24}
                         y={16 + displayFret * 30 - 11}
@@ -188,27 +193,10 @@ export function ChordDetail({ chord }: ChordDetailProps) {
                         fill="hsl(var(--primary-foreground))"
                         fontWeight="bold"
                       >
-                        {position.fingers[stringIndex]}
+                        {pos.finger}
                       </text>
                     )}
                   </g>
-                )
-              })}
-              
-              {/* 横按标记 */}
-              {position.barres?.map((barre, i) => {
-                const displayFret = barre.fret - startFret
-                return (
-                  <rect
-                    key={i}
-                    x={15 + barre.fromString * 24 - 5}
-                    y={16 + displayFret * 30 - 23}
-                    width={(barre.toString - barre.fromString) * 24 + 10}
-                    height="16"
-                    rx="8"
-                    fill="hsl(var(--primary))"
-                    opacity="0.8"
-                  />
                 )
               })}
             </svg>
@@ -216,14 +204,14 @@ export function ChordDetail({ chord }: ChordDetailProps) {
         </div>
       </div>
       
-      {/* 组成音 */}
+      {/* Notes */}
       <div className="space-y-3">
         <h3 className="font-semibold flex items-center gap-2">
           <Volume2 className="h-4 w-4" />
-          组成音
+          Notes
         </h3>
         <div className="flex flex-wrap gap-2">
-          {chord.notes.map((note, i) => (
+          {chord.notes?.map((note, i) => (
             <Badge 
               key={i} 
               variant="outline" 
@@ -233,39 +221,16 @@ export function ChordDetail({ chord }: ChordDetailProps) {
               )}
             >
               {note}
-              {i === 0 && <span className="ml-1 text-xs opacity-60">根音</span>}
+              {i === 0 && <span className="ml-1 text-xs opacity-60">root</span>}
             </Badge>
           ))}
         </div>
       </div>
       
-      {/* 其他把位 */}
-      {chord.positions.length > 1 && (
-        <div className="space-y-3">
-          <h3 className="font-semibold">其他把位</h3>
-          <div className="grid grid-cols-3 gap-3">
-            {chord.positions.slice(1).map((pos, i) => {
-              const posMinFret = Math.min(...pos.frets.filter(f => f > 0))
-              return (
-                <button
-                  key={i}
-                  className="p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors text-center"
-                >
-                  <div className="text-sm font-medium">把位 {i + 2}</div>
-                  <div className="text-xs text-muted-foreground">
-                    第 {posMinFret} 品起
-                  </div>
-                </button>
-              )
-            })}
-          </div>
-        </div>
-      )}
-      
-      {/* 相关和弦 */}
+      {/* Related Chords */}
       {chord.relatedChords && chord.relatedChords.length > 0 && (
         <div className="space-y-3">
-          <h3 className="font-semibold">相关和弦</h3>
+          <h3 className="font-semibold">Related Chords</h3>
           <div className="flex flex-wrap gap-2">
             {chord.relatedChords.map((related, i) => (
               <Badge key={i} variant="secondary" className="cursor-pointer hover:bg-secondary/80">

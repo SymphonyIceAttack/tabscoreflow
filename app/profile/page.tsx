@@ -23,59 +23,59 @@ import {
 } from "lucide-react"
 import type { Achievement, PracticeSession } from "@/lib/types"
 
-// 模拟成就数据
+// Mock achievement data
 const MOCK_ACHIEVEMENTS: Achievement[] = [
   {
     id: "first-practice",
-    name: "初次练习",
-    description: "完成第一次练习",
+    name: "First Practice",
+    description: "Complete your first practice session",
     icon: "music",
     unlockedAt: "2024-01-15",
   },
   {
     id: "week-streak",
-    name: "一周坚持",
-    description: "连续7天练习",
+    name: "Week Streak",
+    description: "Practice for 7 days in a row",
     icon: "flame",
     unlockedAt: "2024-02-01",
   },
   {
     id: "chord-master",
-    name: "和弦大师",
-    description: "学习50个和弦",
+    name: "Chord Master",
+    description: "Learn 50 chords",
     icon: "guitar",
     unlockedAt: "2024-03-10",
   },
   {
     id: "month-streak",
-    name: "月度坚持",
-    description: "连续30天练习",
+    name: "Monthly Streak",
+    description: "Practice for 30 days in a row",
     icon: "flame",
     progress: 67,
   },
   {
     id: "100-hours",
-    name: "百小时练习",
-    description: "累计练习100小时",
+    name: "100 Hours",
+    description: "Accumulate 100 hours of practice",
     icon: "clock",
     progress: 45,
   },
   {
     id: "scale-explorer",
-    name: "音阶探索者",
-    description: "学习所有基础音阶",
+    name: "Scale Explorer",
+    description: "Learn all basic scales",
     icon: "star",
     progress: 30,
   },
 ]
 
-// 生成模拟练习数据
+// Generate mock practice data
 function generateMockSessions(): PracticeSession[] {
   const sessions: PracticeSession[] = []
   const today = new Date()
   
   for (let i = 0; i < 365; i++) {
-    // 随机决定是否有练习
+    // Randomly decide if there's practice
     if (Math.random() > 0.4) {
       const date = new Date(today)
       date.setDate(date.getDate() - i)
@@ -84,7 +84,7 @@ function generateMockSessions(): PracticeSession[] {
         id: `session-${i}`,
         tabId: tabs[Math.floor(Math.random() * tabs.length)].id,
         date: date.toISOString(),
-        duration: Math.floor(Math.random() * 90) + 10, // 10-100 分钟
+        duration: Math.floor(Math.random() * 90) + 10, // 10-100 minutes
         notes: "",
       })
     }
@@ -94,57 +94,58 @@ function generateMockSessions(): PracticeSession[] {
 }
 
 export default function ProfilePage() {
-  const { favorites, practiceHistory, totalPracticeTime, level, experience } = useUserStore()
+  const { favorites, practiceRecords, user } = useUserStore()
   const [activeTab, setActiveTab] = useState("overview")
   
-  // 获取收藏的曲谱
-  const favoriteTabs = tabs.filter(tab => favorites.includes(tab.id))
+  // Get favorited tabs
+  const favoriteTabs = tabs.filter(tab => favorites.some(f => f.tabId === tab.id))
   
-  // 模拟练习数据
+  // Mock practice data
   const mockSessions = generateMockSessions()
   
-  // 计算统计数据
+  // Calculate stats
   const stats = {
-    totalHours: Math.round(totalPracticeTime / 60),
+    totalHours: Math.round((user?.totalPracticeTime || 0) / 60),
     favoritesCount: favorites.length,
     achievementsUnlocked: MOCK_ACHIEVEMENTS.filter(a => a.unlockedAt).length,
-    currentStreak: 5, // 模拟数据
+    currentStreak: 5, // Mock data
   }
   
-  // 经验进度
-  const experienceToNextLevel = level * 1000
-  const experienceProgress = (experience / experienceToNextLevel) * 100
+  // Experience progress
+  const levelValue = user?.level === 'beginner' ? 1 : user?.level === 'intermediate' ? 2 : user?.level === 'advanced' ? 3 : 4
+  const experienceToNextLevel = levelValue * 1000
+  const experienceProgress = 0
   
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
-        {/* 用户信息头部 */}
+        {/* User Info Header */}
         <Card className="bg-card/50 backdrop-blur border-border/50 mb-8">
           <CardContent className="pt-6">
             <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
-              {/* 头像 */}
+              {/* Avatar */}
               <Avatar className="w-24 h-24">
                 <AvatarImage src="/placeholder-avatar.jpg" />
                 <AvatarFallback className="text-2xl bg-primary/10 text-primary">
-                  吉
+                  G
                 </AvatarFallback>
               </Avatar>
               
               <div className="flex-1 text-center sm:text-left">
-                <h1 className="text-2xl font-bold">吉他练习者</h1>
+                <h1 className="text-2xl font-bold">Guitar Practitioner</h1>
                 <p className="text-muted-foreground mt-1">
-                  热爱音乐，坚持每日练习
+                  Passionate about music, practicing daily
                 </p>
                 
-                {/* 等级和经验 */}
+                {/* Level and Experience */}
                 <div className="mt-4 max-w-xs sm:max-w-sm">
                   <div className="flex items-center justify-between text-sm mb-1">
                     <span className="flex items-center gap-1">
                       <Target className="h-4 w-4 text-primary" />
-                      等级 {level}
+                      Level {levelValue}
                     </span>
                     <span className="text-muted-foreground">
-                      {experience} / {experienceToNextLevel} XP
+                      0 / {experienceToNextLevel} XP
                     </span>
                   </div>
                   <div className="h-2 bg-muted rounded-full overflow-hidden">
@@ -155,24 +156,24 @@ export default function ProfilePage() {
                   </div>
                 </div>
                 
-                {/* 快捷统计 */}
+                {/* Quick Stats */}
                 <div className="flex flex-wrap justify-center sm:justify-start gap-4 mt-4">
                   <Badge variant="secondary" className="gap-1">
                     <Clock className="h-3 w-3" />
-                    {stats.totalHours} 小时练习
+                    {stats.totalHours} hours
                   </Badge>
                   <Badge variant="secondary" className="gap-1">
                     <Heart className="h-3 w-3" />
-                    {stats.favoritesCount} 收藏
+                    {stats.favoritesCount} favorites
                   </Badge>
                   <Badge variant="secondary" className="gap-1">
                     <Trophy className="h-3 w-3" />
-                    {stats.achievementsUnlocked} 成就
+                    {stats.achievementsUnlocked} achievements
                   </Badge>
                 </div>
               </div>
               
-              {/* 设置按钮 */}
+              {/* Settings Buttons */}
               <div className="flex gap-2">
                 <Button variant="outline" size="icon">
                   <Settings className="h-4 w-4" />
@@ -185,80 +186,80 @@ export default function ProfilePage() {
           </CardContent>
         </Card>
         
-        {/* 标签页 */}
+        {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid w-full grid-cols-4 mb-6">
             <TabsTrigger value="overview" className="gap-2">
               <TrendingUp className="h-4 w-4" />
-              <span className="hidden sm:inline">概览</span>
+              <span className="hidden sm:inline">Overview</span>
             </TabsTrigger>
             <TabsTrigger value="favorites" className="gap-2">
               <Heart className="h-4 w-4" />
-              <span className="hidden sm:inline">收藏</span>
+              <span className="hidden sm:inline">Favorites</span>
             </TabsTrigger>
             <TabsTrigger value="history" className="gap-2">
               <Clock className="h-4 w-4" />
-              <span className="hidden sm:inline">记录</span>
+              <span className="hidden sm:inline">History</span>
             </TabsTrigger>
             <TabsTrigger value="achievements" className="gap-2">
               <Trophy className="h-4 w-4" />
-              <span className="hidden sm:inline">成就</span>
+              <span className="hidden sm:inline">Achievements</span>
             </TabsTrigger>
           </TabsList>
           
-          {/* 概览 */}
+          {/* Overview */}
           <TabsContent value="overview" className="space-y-6">
-            {/* 统计卡片 */}
+            {/* Stats Cards */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <Card className="bg-card/50 backdrop-blur border-border/50">
                 <CardContent className="pt-6 text-center">
                   <Clock className="h-8 w-8 mx-auto text-primary mb-2" />
                   <div className="text-3xl font-bold">{stats.totalHours}</div>
-                  <div className="text-sm text-muted-foreground">练习小时</div>
+                  <div className="text-sm text-muted-foreground">Practice Hours</div>
                 </CardContent>
               </Card>
               <Card className="bg-card/50 backdrop-blur border-border/50">
                 <CardContent className="pt-6 text-center">
                   <Music className="h-8 w-8 mx-auto text-primary mb-2" />
-                  <div className="text-3xl font-bold">{practiceHistory.length}</div>
-                  <div className="text-sm text-muted-foreground">练习曲谱</div>
+                  <div className="text-3xl font-bold">{mockSessions.length}</div>
+                  <div className="text-sm text-muted-foreground">Tabs Practiced</div>
                 </CardContent>
               </Card>
               <Card className="bg-card/50 backdrop-blur border-border/50">
                 <CardContent className="pt-6 text-center">
                   <Target className="h-8 w-8 mx-auto text-primary mb-2" />
                   <div className="text-3xl font-bold">{stats.currentStreak}</div>
-                  <div className="text-sm text-muted-foreground">连续天数</div>
+                  <div className="text-sm text-muted-foreground">Day Streak</div>
                 </CardContent>
               </Card>
               <Card className="bg-card/50 backdrop-blur border-border/50">
                 <CardContent className="pt-6 text-center">
                   <Trophy className="h-8 w-8 mx-auto text-primary mb-2" />
                   <div className="text-3xl font-bold">{stats.achievementsUnlocked}</div>
-                  <div className="text-sm text-muted-foreground">已获成就</div>
+                  <div className="text-sm text-muted-foreground">Achievements</div>
                 </CardContent>
               </Card>
             </div>
             
-            {/* 练习热力图 */}
+            {/* Practice Heatmap */}
             <Card className="bg-card/50 backdrop-blur border-border/50">
               <CardHeader>
-                <CardTitle>练习记录</CardTitle>
+                <CardTitle>Practice Records</CardTitle>
               </CardHeader>
               <CardContent>
                 <PracticeHeatmap sessions={mockSessions} />
               </CardContent>
             </Card>
             
-            {/* 最近练习 */}
+            {/* Recent Practice */}
             <Card className="bg-card/50 backdrop-blur border-border/50">
               <CardHeader>
-                <CardTitle>最近练习</CardTitle>
+                <CardTitle>Recent Practice</CardTitle>
               </CardHeader>
               <CardContent>
-                {practiceHistory.length > 0 ? (
+                {mockSessions.length > 0 ? (
                   <div className="space-y-3">
-                    {practiceHistory.slice(0, 5).map((record) => {
+                    {mockSessions.slice(0, 5).map((record: { tabId: string; duration: number; date: string }) => {
                       const tab = tabs.find(t => t.id === record.tabId)
                       if (!tab) return null
                       return (
@@ -276,9 +277,9 @@ export default function ProfilePage() {
                             </div>
                           </div>
                           <div className="text-right">
-                            <div className="text-sm">{record.practiceCount} 次练习</div>
+                            <div className="text-sm">{Math.floor(record.duration / 60)} min</div>
                             <div className="text-xs text-muted-foreground">
-                              {new Date(record.lastPracticed).toLocaleDateString("zh-CN")}
+                              {new Date(record.date).toLocaleDateString("en-US")}
                             </div>
                           </div>
                         </div>
@@ -288,19 +289,19 @@ export default function ProfilePage() {
                 ) : (
                   <div className="text-center py-8 text-muted-foreground">
                     <Music className="h-12 w-12 mx-auto mb-3 opacity-30" />
-                    <p>还没有练习记录</p>
-                    <p className="text-sm">开始练习第一首曲子吧！</p>
+                    <p>No practice records yet</p>
+                    <p className="text-sm">Start practicing your first song!</p>
                   </div>
                 )}
               </CardContent>
             </Card>
           </TabsContent>
           
-          {/* 收藏 */}
+          {/* Favorites */}
           <TabsContent value="favorites">
             <Card className="bg-card/50 backdrop-blur border-border/50">
               <CardHeader>
-                <CardTitle>我的收藏</CardTitle>
+                <CardTitle>My Favorites</CardTitle>
               </CardHeader>
               <CardContent>
                 {favoriteTabs.length > 0 ? (
@@ -312,10 +313,10 @@ export default function ProfilePage() {
                 ) : (
                   <div className="text-center py-12 text-muted-foreground">
                     <Heart className="h-12 w-12 mx-auto mb-3 opacity-30" />
-                    <p>还没有收藏任何曲谱</p>
-                    <p className="text-sm">浏览曲谱库，找到喜欢的曲子收藏起来</p>
+                    <p>No favorites yet</p>
+                    <p className="text-sm">Browse the tab library to find songs you like</p>
                     <Button className="mt-4" asChild>
-                      <a href="/tabs">浏览曲谱库</a>
+                      <a href="/tabs">Browse Tabs</a>
                     </Button>
                   </div>
                 )}
@@ -323,18 +324,18 @@ export default function ProfilePage() {
             </Card>
           </TabsContent>
           
-          {/* 练习记录 */}
+          {/* Practice History */}
           <TabsContent value="history">
             <Card className="bg-card/50 backdrop-blur border-border/50">
               <CardHeader>
-                <CardTitle>练习历史</CardTitle>
+                <CardTitle>Practice History</CardTitle>
               </CardHeader>
               <CardContent>
                 <PracticeHeatmap sessions={mockSessions} />
                 
-                {/* 详细记录列表 */}
+                {/* Detailed Records List */}
                 <div className="mt-8 space-y-4">
-                  <h3 className="font-semibold">最近30天练习详情</h3>
+                  <h3 className="font-semibold">Last 30 Days Practice Details</h3>
                   <div className="space-y-2">
                     {mockSessions.slice(0, 10).map((session) => {
                       const tab = tabs.find(t => t.id === session.tabId)
@@ -345,14 +346,14 @@ export default function ProfilePage() {
                         >
                           <div className="flex items-center gap-3">
                             <div className="text-sm text-muted-foreground w-24">
-                              {new Date(session.date).toLocaleDateString("zh-CN")}
+                              {new Date(session.date).toLocaleDateString("en-US")}
                             </div>
                             <div>
-                              <div className="font-medium">{tab?.title || "未知曲目"}</div>
+                              <div className="font-medium">{tab?.title || "Unknown"}</div>
                               <div className="text-sm text-muted-foreground">{tab?.artist}</div>
                             </div>
                           </div>
-                          <Badge variant="outline">{session.duration} 分钟</Badge>
+                          <Badge variant="outline">{session.duration} min</Badge>
                         </div>
                       )
                     })}
@@ -362,11 +363,11 @@ export default function ProfilePage() {
             </Card>
           </TabsContent>
           
-          {/* 成就 */}
+          {/* Achievements */}
           <TabsContent value="achievements">
             <Card className="bg-card/50 backdrop-blur border-border/50">
               <CardHeader>
-                <CardTitle>成就系统</CardTitle>
+                <CardTitle>Achievements</CardTitle>
               </CardHeader>
               <CardContent>
                 <Achievements achievements={MOCK_ACHIEVEMENTS} />

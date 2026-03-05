@@ -17,7 +17,7 @@ export const tabs: Tab[] = [
     viewCount: 89234,
     createdAt: '2024-01-15',
     tuning: 'Standard',
-    description: '经典的 Oasis 歌曲，非常适合初学者练习扫弦和和弦转换。'
+    description: "A classic Oasis song, perfect for beginners to practice strumming and chord changes."
   },
   {
     id: '2',

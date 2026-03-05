@@ -339,19 +339,27 @@ export const chords: Chord[] = [
 ]
 
 export const chordTypes = [
-  { value: 'major', label: '大三和弦' },
-  { value: 'minor', label: '小三和弦' },
-  { value: 'seventh', label: '七和弦' },
-  { value: 'maj7', label: '大七和弦' },
-  { value: 'min7', label: '小七和弦' },
-  { value: 'sus2', label: '挂二和弦' },
-  { value: 'sus4', label: '挂四和弦' },
-  { value: 'dim', label: '减和弦' },
-  { value: 'aug', label: '增和弦' },
-  { value: 'power', label: '强力和弦' }
+  { value: 'major', label: 'Major' },
+  { value: 'minor', label: 'Minor' },
+  { value: 'seventh', label: '7th' },
+  { value: 'maj7', label: 'Major 7th' },
+  { value: 'min7', label: 'Minor 7th' },
+  { value: 'sus2', label: 'Sus2' },
+  { value: 'sus4', label: 'Sus4' },
+  { value: 'dim', label: 'Diminished' },
+  { value: 'aug', label: 'Augmented' },
+  { value: 'power', label: 'Power' }
 ]
 
 export const roots = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+
+export const CHORD_CATEGORIES = chordTypes
+export const ROOT_NOTES = roots
+export const DIFFICULTIES = [
+  { value: 1, label: 'Beginner' },
+  { value: 2, label: 'Intermediate' },
+  { value: 3, label: 'Advanced' }
+]
 
 export function getChordById(id: string): Chord | undefined {
   return chords.find(chord => chord.id === id)

@@ -16,9 +16,9 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'GuitarTab Pro - 吉他曲谱练习平台',
-  description: '专业的吉他曲谱练习网站，提供交互式曲谱播放、调音器、节拍器、和弦库等工具，助你提升吉他技能。',
-  keywords: ['吉他', '曲谱', 'Tab谱', '吉他练习', '调音器', '节拍器', '和弦', '音阶'],
+  title: 'GuitarTab Pro - Guitar Tab Practice Platform',
+  description: 'Professional guitar tab practice website with interactive tab playback, tuner, metronome, chord library and more tools to help you improve your guitar skills.',
+  keywords: ['guitar', 'tabs', 'tab', 'guitar practice', 'tuner', 'metronome', 'chord', 'scale'],
   authors: [{ name: 'GuitarTab Pro' }],
   generator: 'v0.app',
   icons: {
@@ -57,7 +57,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="zh-CN" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <body className={`${geist.variable} ${geistMono.variable} font-sans antialiased`}>
         <ThemeProvider
           attribute="class"
